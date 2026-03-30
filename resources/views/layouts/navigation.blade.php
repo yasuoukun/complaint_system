@@ -8,7 +8,7 @@
                             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10 w-auto">
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-white font-bold text-lg leading-tight">หน่วยงานบริการร้องทุกข์ออนไลน์</span>
+                            <span class="text-white font-bold text-lg leading-tight">หน่วยงานบริการร้องเรียนออนไลน์</span>
                             <span class="text-yellow-400 text-sm font-medium">BY นายก บรรยงค์</span>
                         </div>
                     </a>

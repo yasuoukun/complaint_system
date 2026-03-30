@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Complaint;
 
 class AdminUserController extends Controller
 {
@@ -72,4 +73,19 @@ class AdminUserController extends Controller
 
         return back()->with('success', 'ลบบัญชีผู้ใช้งานเรียบร้อยแล้ว');
     }
+
+    public function show($id)
+    {
+        // 1. ดึงข้อมูลสมาชิก
+        $user = User::findOrFail($id);
+
+        // 2. ดึงประวัติการร้องเรียนทั้งหมดของคนนี้
+        $history = Complaint::where('user_id', $id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        // 3. ส่งไปหน้า View
+        return view('admin.users.show', compact('user', 'history'));
+    }
+
 }

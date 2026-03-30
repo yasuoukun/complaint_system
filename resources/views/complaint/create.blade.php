@@ -37,18 +37,10 @@
                 </div>
             @endif
 
-            @if ($errors->any())
-                <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r shadow-sm animate-pulse">
-                    <div class="flex items-center gap-2 font-bold mb-1">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                        มีข้อมูลบางอย่างไม่ถูกต้อง กรุณาตรวจสอบจุดที่มีสีแดง
-                    </div>
-                </div>
-            @endif
-
             <form id="complaintForm" action="{{ route('complaints.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
+                {{-- 1. ข้อมูลผู้ร้องเรียน --}}
                 <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6 border border-gray-200">
                     <div class="bg-blue-900 px-6 py-4 border-b border-blue-800 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -65,28 +57,24 @@
 
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">คำนำหน้า</label>
-                            <select name="title" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('title') border-red-500 @enderror" required>
+                            <select name="title" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
                                 <option value="" disabled {{ old('title') ? '' : 'selected' }}>เลือก</option>
                                 <option value="นาย" {{ old('title') == 'นาย' ? 'selected' : '' }}>นาย</option>
                                 <option value="นาง" {{ old('title') == 'นาง' ? 'selected' : '' }}>นาง</option>
                                 <option value="นางสาว" {{ old('title') == 'นางสาว' ? 'selected' : '' }}>นางสาว</option>
                             </select>
-                            @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">ชื่อจริง</label>
-                            <input type="text" name="first_name" value="{{ old('first_name') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('first_name') border-red-500 @enderror" required>
-                            @error('first_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            <input type="text" name="first_name" value="{{ old('first_name') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">นามสกุล</label>
-                            <input type="text" name="last_name" value="{{ old('last_name') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('last_name') border-red-500 @enderror" required>
-                            @error('last_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            <input type="text" name="last_name" value="{{ old('last_name') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">อายุ</label>
-                            <input type="number" name="age" value="{{ old('age') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('age') border-red-500 @enderror" required>
-                            @error('age') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            <input type="number" name="age" value="{{ old('age') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
                         </div>
                         
                         <div class="md:col-span-6">
@@ -95,58 +83,65 @@
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                                 </div>
-                                <input type="text" id="phone" name="phone_number" value="{{ old('phone_number') }}" class="pl-10 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-yellow-50 @error('phone_number') border-red-500 @enderror" required pattern="0[0-9]{9}" maxlength="10" minlength="10" inputmode="numeric" placeholder="08xxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <input type="text" id="phone" name="phone_number" value="{{ old('phone_number') }}" class="pl-10 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-yellow-50" required pattern="0[0-9]{9}" maxlength="10" minlength="10" inputmode="numeric" placeholder="08xxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
-                            @error('phone_number') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
 
+                {{-- 2. สถานที่เกิดเหตุ --}}
                 <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6 border border-gray-200">
                     <div class="bg-blue-900 px-6 py-4 border-b border-blue-800">
                         <h3 class="text-lg font-bold text-white flex items-center gap-2">
                             <span class="flex items-center justify-center w-6 h-6 rounded-full bg-yellow-400 text-blue-900 text-xs">2</span>
-                            สถานที่เกิดเหตุ
+                            ที่อยู่และสถานที่เกิดเหตุ
                         </h3>
                     </div>
                     <div class="p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
                         <div class="md:col-span-3">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">บ้านเลขที่</label>
-                            <input type="text" name="house_no" value="{{ old('house_no') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('house_no') border-red-500 @enderror" required>
-                            @error('house_no') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            <input type="text" name="house_no" value="{{ old('house_no') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400" placeholder="ถ้ามี">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">หมู่ที่</label>
-                            <input type="text" name="moo" value="{{ old('moo') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('moo') border-red-500 @enderror" required>
-                            @error('moo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            <input type="text" name="moo" value="{{ old('moo') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400" placeholder="-">
                         </div>
                         <div class="md:col-span-7">
                             <label class="block text-sm font-semibold text-gray-700 mb-1">ถนน / ซอย</label>
-                            <input type="text" name="road" value="{{ old('road') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            <input type="text" name="road" value="{{ old('road') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400" placeholder="-">
                         </div>
-                        
-                        <div class="md:col-span-12">
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">ชุมชน <span class="text-red-500">*</span></label>
-                            <select name="community" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 cursor-pointer @error('community') border-red-500 @enderror" required>
-                                <option value="" disabled {{ old('community') ? '' : 'selected' }}>-- กรุณาเลือกชุมชน --</option>
-                                @php
-                                    $communities = [
-                                        "หนองปลาเฒ่า", "เมืองพญาแล", "หนองหลอด", "ขี้เหล็กใหญ่", "ขี้เหล็กน้อย-มิตรภาพ",
-                                        "ทานตะวัน", "โนนตาปาน", "หนองสังข์", "คลองเรียง", "ขี้เหล็กน้อย-ปรางค์กู่",
-                                        "เมืองเก่า", "โนนไฮ", "หนองบัว", "ตลาด", "หินตั้ง-โพนงาม", "ราษฎร์เจริญสุข",
-                                        "ใหม่พัฒนา", "โนนสาทร", "โนนสมอ", "อาทร ทวีสุข", "คลองลี่", "สนามบิน",
-                                        "หนองบ่อ", "กุดแคน-ฝั่งถนน", "โคกน้อย", "เมืองน้อยเหนือ", "เมืองน้อยใต้"
-                                    ];
-                                @endphp
-                                @foreach($communities as $comm)
+
+                        <div class="col-span-12 my-2 border-t border-gray-100"></div>
+
+                        <div class="md:col-span-6">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">
+                                ชุมชนของผู้แจ้ง <span class="text-red-500">*</span> 
+                                <span class="text-xs font-normal text-gray-500">(สำหรับลงเอกสารราชการ)</span>
+                            </label>
+                            <select name="community" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 cursor-pointer" required>
+                                <option value="" disabled {{ old('community') ? '' : 'selected' }}>-- เลือกชุมชนที่ท่านอาศัยอยู่ --</option>
+                                @foreach(["หนองปลาเฒ่า", "เมืองพญาแล", "หนองหลอด", "ขี้เหล็กใหญ่", "ขี้เหล็กน้อย-มิตรภาพ", "ทานตะวัน", "โนนตาปาน", "หนองสังข์", "คลองเรียง", "ขี้เหล็กน้อย-ปรางค์กู่", "เมืองเก่า", "โนนไฮ", "หนองบัว", "ตลาด", "หินตั้ง-โพนงาม", "ราษฎร์เจริญสุข", "ใหม่พัฒนา", "โนนสาทร", "โนนสมอ", "อาทร ทวีสุข", "คลองลี่", "สนามบิน", "หนองบ่อ", "กุดแคน-ฝั่งถนน", "โคกน้อย", "เมืองน้อยเหนือ", "เมืองน้อยใต้"] as $comm)
                                     <option value="{{ $comm }}" {{ old('community') == $comm ? 'selected' : '' }}>{{ $comm }}</option>
                                 @endforeach
                             </select>
-                            @error('community') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="md:col-span-6">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">
+                                📍 ชุมชน/พื้นที่ ที่เกิดเหตุ <span class="text-red-500">*</span>
+                                <span class="text-xs font-normal text-gray-500">(เพื่อระบุพิกัดเจ้าหน้าที่)</span>
+                            </label>
+                            <select name="incident_community" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 cursor-pointer bg-blue-50" required>
+                                <option value="" disabled {{ old('incident_community') ? '' : 'selected' }}>-- เลือกพื้นที่ที่เกิดปัญหา --</option>
+                                @foreach(["หนองปลาเฒ่า", "เมืองพญาแล", "หนองหลอด", "ขี้เหล็กใหญ่", "ขี้เหล็กน้อย-มิตรภาพ", "ทานตะวัน", "โนนตาปาน", "หนองสังข์", "คลองเรียง", "ขี้เหล็กน้อย-ปรางค์กู่", "เมืองเก่า", "โนนไฮ", "หนองบัว", "ตลาด", "หินตั้ง-โพนงาม", "ราษฎร์เจริญสุข", "ใหม่พัฒนา", "โนนสาทร", "โนนสมอ", "อาทร ทวีสุข", "คลองลี่", "สนามบิน", "หนองบ่อ", "กุดแคน-ฝั่งถนน", "โคกน้อย", "เมืองน้อยเหนือ", "เมืองน้อยใต้"] as $comm)
+                                    <option value="{{ $comm }}" {{ old('incident_community') == $comm ? 'selected' : '' }}>{{ $comm }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
 
+                {{-- 3. รายละเอียดและพิกัด --}}
                 <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8 border border-gray-200">
                     <div class="bg-blue-900 px-6 py-4 border-b border-blue-800">
                         <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -157,12 +152,19 @@
                     <div class="p-6">
                         <div class="mb-6">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">รายละเอียดปัญหา <span class="text-red-500">*</span></label>
-                            <textarea name="details" rows="5" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('details') border-red-500 @enderror" required placeholder="กรุณาระบุรายละเอียดให้ชัดเจน...">{{ old('details') }}</textarea>
-                            @error('details') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            <textarea name="details" rows="5" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required placeholder="กรุณาระบุรายละเอียดให้ชัดเจน...">{{ old('details') }}</textarea>
                         </div>
 
                         <div class="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <label class="block text-sm font-bold text-gray-700 mb-2 text-center">📍 พิกัดจุดเกิดเหตุ (ระบบค้นหาอัตโนมัติ)</label>
+                            <div class="flex flex-col md:flex-row justify-between items-center mb-2">
+                                <label class="block text-sm font-bold text-gray-700">📍 พิกัดจุดเกิดเหตุ (ระบบค้นหาอัตโนมัติ)</label>
+                                
+                                {{-- ปุ่มระบุตำแหน่งปัจจุบัน --}}
+                                <button type="button" onclick="resetLocation()" class="mt-2 md:mt-0 bg-blue-100 border border-blue-300 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold shadow-sm hover:bg-blue-200 transition flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    รีเซ็ต / ระบุตำแหน่งปัจจุบัน
+                                </button>
+                            </div>
                             
                             <div class="grid grid-cols-2 gap-4 mb-3">
                                 <div class="relative">
@@ -187,29 +189,27 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">รูปภาพประกอบ (ถ้ามี)</label>
-                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:bg-gray-50 transition @error('photo_image') border-red-500 @enderror">
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">รูปภาพประกอบ (สูงสุด 4 รูป)</label>
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:bg-gray-50 transition relative group cursor-pointer bg-white">
+                                <div class="space-y-1 text-center pointer-events-none">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400 group-hover:text-blue-500 transition" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
                                     <div class="flex text-sm text-gray-600 justify-center">
-                                        <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                            <span>อัปโหลดไฟล์รูปภาพ</span>
-                                            <input id="file-upload" name="photo_image" type="file" class="sr-only" accept="image/*" onchange="document.getElementById('file-name').innerText = this.files[0].name">
-                                        </label>
+                                        <span class="relative rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">คลิกเพื่อเลือกไฟล์</span>
+                                        <p class="pl-1">หรือลากไฟล์มาวางที่นี่</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">PNG, JPG, GIF ไม่เกิน 2MB</p>
-                                    <p id="file-name" class="text-sm text-green-600 font-bold mt-2"></p>
+                                    <p class="text-xs text-red-500 font-bold mt-1">* เลือกได้ไม่เกิน 4 รูป</p>
                                 </div>
+                                <input type="file" id="images" name="images[]" multiple accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="checkAndPreview(this)">
                             </div>
-                            @error('photo_image') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            <div id="image-preview-container" class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-center pb-12">
-                    <button type="button" onclick="captureAndSubmit()" class="w-full md:w-auto bg-gradient-to-r from-yellow-400 to-yellow-500 text-blue-900 text-lg font-bold px-10 py-4 rounded-full shadow-lg hover:shadow-xl hover:from-yellow-500 hover:to-yellow-600 transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-2">
+                    <button type="submit" id="btnSubmit" class="w-full md:w-auto bg-gradient-to-r from-yellow-400 to-yellow-500 text-blue-900 text-lg font-bold px-10 py-4 rounded-full shadow-lg hover:shadow-xl hover:from-yellow-500 hover:to-yellow-600 transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                         ยืนยันส่งเรื่องร้องเรียน
                     </button>
@@ -219,83 +219,185 @@
         </div>
     </div>
 
+    <div id="pdpaModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 text-center sm:p-0">
+            <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" onclick="closePdpaModal()" aria-hidden="true"></div>
+
+            <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative z-10">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-100">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-bold text-gray-900" id="modal-title">
+                                นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)
+                            </h3>
+                            <div class="mt-3 text-sm text-gray-600">
+                                <p>เทศบาลเมืองชัยภูมิ มีความจำเป็นต้องเก็บรวบรวมข้อมูลส่วนบุคคลของท่าน ได้แก่ ชื่อ-นามสกุล, หมายเลขโทรศัพท์ และพิกัดสถานที่เกิดเหตุ เพื่อประโยชน์ในการดำเนินงานดังนี้:</p>
+                                <ul class="list-disc pl-5 mt-2 space-y-1">
+                                    <li>เพื่อใช้ในการติดต่อประสานงาน และแจ้งความคืบหน้าการแก้ไขปัญหา</li>
+                                    <li>เพื่อใช้เป็นหลักฐานประกอบการดำเนินงานของเจ้าหน้าที่</li>
+                                </ul>
+                                <p class="mt-4 p-3 bg-red-50 text-red-600 text-xs font-semibold rounded-lg border border-red-100">
+                                    * ข้อมูลของท่านจะถูกจัดเก็บด้วยมาตรการรักษาความปลอดภัยขั้นสูงสุด และไม่มีการนำไปเปิดเผยเพื่อวัตถุประสงค์อื่นนอกเหนือจากงานบริการประชาชน
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+                    <button type="button" onclick="closePdpaModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-100 sm:mt-0 sm:w-auto sm:text-sm">
+                        ยกเลิก (ยังไม่ส่ง)
+                    </button>
+                    <button type="button" onclick="acceptAndSubmit()" class="w-full inline-flex justify-center items-center gap-1 rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 sm:w-auto sm:text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        ข้าพเจ้ายินยอม และส่งคำร้อง
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // =====================================
+        // ดักจับการกด Submit ของฟอร์มทุกรูปแบบ (ไม้ตายกันหลุด)
+        // =====================================
+        document.getElementById('complaintForm').addEventListener('submit', function(event) {
+            // ถ้าระบบไม่ได้ให้ใบสั่งผ่าน (allowSubmit) ให้เบรกไว้ก่อน
+            if (!window.allowSubmit) {
+                event.preventDefault(); // เบรกการส่งข้อมูล!
+                document.getElementById('pdpaModal').style.display = 'block'; // โชว์ Modal
+            }
+        });
+
+        function closePdpaModal() {
+            document.getElementById('pdpaModal').style.display = 'none';
+        }
+
+        // เมื่อกดยินยอมใน Modal
+        function acceptAndSubmit() {
+            closePdpaModal(); // ปิดหน้าต่าง
+            
+            // เปลี่ยนหน้าตาปุ่มหลักให้รู้ว่ากำลังโหลด
+            var submitBtn = document.getElementById('btnSubmit');
+            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> กำลังบันทึกข้อมูล...';
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            // แคปเจอร์แผนที่
+            html2canvas(document.getElementById('map'), { useCORS: true, allowTaint: true }).then(function(canvas) {
+                document.getElementById('map_capture').value = canvas.toDataURL("image/png");
+                
+                window.allowSubmit = true; // ให้ใบสั่งผ่าน
+                document.getElementById('complaintForm').submit(); // บังคับส่งข้อมูลจริงๆ
+            }).catch(function(err) {
+                window.allowSubmit = true; // ให้ใบสั่งผ่าน
+                document.getElementById('complaintForm').submit(); // ถ้าแคปพังก็ให้ส่งไปเลย
+            });
+        }
+
+
+        // =====================================
+        // โค้ดแผนที่และการพรีวิวรูป (ของคุณเดิมทั้งหมด)
+        // =====================================
+        var map, marker;
+        var defaultLat = 15.8065; 
+        var defaultLng = 102.0315;
+
+        function updateInputs(lat, lng) {
+            document.getElementById('latitude').value = lat.toFixed(7);
+            document.getElementById('longitude').value = lng.toFixed(7);
+        }
+
+        function resetLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        var lat = position.coords.latitude;
+                        var lng = position.coords.longitude;
+                        if (map && marker) {
+                            map.setView([lat, lng], 18);
+                            marker.setLatLng([lat, lng]);
+                        }
+                        updateInputs(lat, lng);
+                    },
+                    function(error) {
+                        navigator.geolocation.getCurrentPosition(
+                            function(posLow) {
+                                var lat = posLow.coords.latitude;
+                                var lng = posLow.coords.longitude;
+                                if (map && marker) {
+                                    map.setView([lat, lng], 16);
+                                    marker.setLatLng([lat, lng]);
+                                }
+                                updateInputs(lat, lng);
+                            },
+                            function(errLow) {
+                                alert("ไม่สามารถระบุตำแหน่ง GPS ได้ ระบบจะใช้ตำแหน่งเริ่มต้น");
+                                if (map && marker) {
+                                    map.setView([defaultLat, defaultLng], 15);
+                                    marker.setLatLng([defaultLat, defaultLng]);
+                                }
+                                updateInputs(defaultLat, defaultLng);
+                            },
+                            { enableHighAccuracy: false, timeout: 4000, maximumAge: 300000 }
+                        );
+                    },
+                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 300000 }
+                );
+            } else {
+                alert("เบราว์เซอร์ของคุณไม่รองรับการระบุตำแหน่ง");
+            }
+        }
+
+        function checkAndPreview(input) {
+            var container = document.getElementById('image-preview-container');
+            container.innerHTML = ''; 
+            if (input.files.length > 4) {
+                alert("คุณสามารถอัปโหลดรูปภาพได้สูงสุด 4 รูปเท่านั้นครับ\nกรุณาเลือกใหม่");
+                input.value = ""; 
+                return; 
+            }
+            if (input.files) {
+                Array.from(input.files).forEach(file => {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var div = document.createElement('div');
+                        div.className = 'relative group aspect-square rounded-lg overflow-hidden border border-gray-200 shadow-sm';
+                        div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                        container.appendChild(div);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
-            // ตรวจสอบว่ามีค่าเก่า (Old Input) ไหม ถ้ามีให้ใช้ค่าเก่า ถ้าไม่มีให้ใช้ค่า Default (ชัยภูมิ)
+            window.allowSubmit = false; // รีเซ็ตใบสั่งผ่านทุกครั้งที่โหลดหน้าใหม่
+
             var oldLat = "{{ old('latitude') }}";
             var oldLng = "{{ old('longitude') }}";
-
-            var defaultLat = oldLat ? parseFloat(oldLat) : 15.8065;
-            var defaultLng = oldLng ? parseFloat(oldLng) : 102.0315;
             
-            var map = L.map('map').setView([defaultLat, defaultLng], 15);
+            var startLat = oldLat ? parseFloat(oldLat) : defaultLat;
+            var startLng = oldLng ? parseFloat(oldLng) : defaultLng;
+            
+            map = L.map('map').setView([startLat, startLng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+            marker = L.marker([startLat, startLng], {draggable: true}).addTo(map);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-
-            var marker = L.marker([defaultLat, defaultLng], {draggable: true}).addTo(map);
-
-            function updateInputs(lat, lng) {
-                document.getElementById('latitude').value = lat.toFixed(7);
-                document.getElementById('longitude').value = lng.toFixed(7);
-            }
-
-            // ถ้ามีค่าเก่า ให้กรอกลง input เลย
-            if(oldLat && oldLng) {
-                updateInputs(defaultLat, defaultLng);
-            }
+            if(oldLat && oldLng) { updateInputs(startLat, startLng); }
 
             marker.on('dragend', function(e) {
                 var position = marker.getLatLng();
                 updateInputs(position.lat, position.lng);
             });
 
-            // ถ้าไม่มีค่าเก่า ให้หา GPS ใหม่
             if(!oldLat) {
-                function locateUser() {
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            function(position) {
-                                var lat = position.coords.latitude;
-                                var lng = position.coords.longitude;
-                                map.setView([lat, lng], 18);
-                                marker.setLatLng([lat, lng]);
-                                updateInputs(lat, lng);
-                            },
-                            function(error) {
-                                console.error("GPS Error");
-                                // ถ้าหาไม่เจอ ก็ใช้ค่า Default ที่ตั้งไว้
-                                updateInputs(defaultLat, defaultLng);
-                            },
-                            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-                        );
-                    } else {
-                        updateInputs(defaultLat, defaultLng);
-                    }
-                }
-                locateUser();
+                resetLocation();
             }
         });
-
-        function captureAndSubmit() {
-            var submitBtn = document.querySelector('button[onclick="captureAndSubmit()"]');
-            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> กำลังบันทึกข้อมูล...';
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
-
-            html2canvas(document.getElementById('map'), {
-                useCORS: true,
-                allowTaint: true
-            }).then(function(canvas) {
-                var imgData = canvas.toDataURL("image/png");
-                document.getElementById('map_capture').value = imgData;
-                document.getElementById('complaintForm').submit();
-            }).catch(function(err) {
-                console.error("Capture Error:", err);
-                // ถ้าแคปไม่ได้ ก็ให้ส่งไปเลย (อย่างน้อยก็ได้ข้อมูล)
-                document.getElementById('complaintForm').submit();
-            });
-        }
     </script>
 </x-app-layout>

@@ -7,7 +7,7 @@
                 </div>
                 <h2 class="font-bold text-xl text-blue-900 leading-tight">Admin Dashboard</h2>
             </div>
-            <div class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border shadow-sm">📅 {{ date('d/m/Y') }}</div>
+            <div class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border shadow-sm"> {{ date('d/m/Y') }}</div>
         </div>
     </x-slot>
 
@@ -111,18 +111,28 @@
                     <button @click="showDelete = !showDelete" class="text-xs bg-white border border-red-300 text-red-600 px-3 py-1 rounded hover:bg-red-50">🗑️ ล้างประวัติ</button>
                 </div>
                 
-                <div x-show="showDelete" class="bg-red-50 p-3 border-b border-red-100 flex gap-4 items-center" style="display: none;">
-                    <form action="{{ route('admin.complaints.bulk_destroy') }}" method="POST" onsubmit="return confirm('ยืนยันการลบ?');" class="flex gap-2 items-center">
+                <div x-show="showDelete" class="bg-red-50 p-3 border-b border-red-100 flex flex-wrap gap-3 items-center" style="display: none;">
+                    
+                    <form action="{{ route('admin.complaints.bulk_destroy') }}" method="POST" onsubmit="return confirm('ยืนยันการลบ?');" class="flex flex-wrap gap-2 items-center">
                         @csrf <input type="hidden" name="type" value="month">
-                        <input type="month" name="select_month" required class="text-xs border-gray-300 rounded">
-                        <button class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700">ลบเดือนนี้</button>
+                        <div class="flex items-center gap-2">
+                            <input type="month" name="select_month" required class="text-xs border-gray-300 rounded">
+                            <button class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 whitespace-nowrap">ลบเดือนนี้</button>
+                        </div>
                     </form>
-                    <span class="text-gray-300">|</span>
-                    <form action="{{ route('admin.complaints.bulk_destroy') }}" method="POST" onsubmit="return confirm('ลบ?');" class="flex gap-2 items-center">
+
+                    <span class="text-gray-300 hidden md:inline">|</span>
+
+                    <form action="{{ route('admin.complaints.bulk_destroy') }}" method="POST" onsubmit="return confirm('ลบ?');" class="flex flex-wrap gap-2 items-center">
                         @csrf <input type="hidden" name="type" value="range">
-                        <input type="date" name="start_date" required class="text-xs border-gray-300 rounded"> - <input type="date" name="end_date" required class="text-xs border-gray-300 rounded">
-                        <button class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700">ลบช่วงเวลา</button>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <input type="date" name="start_date" required class="text-xs border-gray-300 rounded"> 
+                            <span>-</span> 
+                            <input type="date" name="end_date" required class="text-xs border-gray-300 rounded">
+                            <button class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 whitespace-nowrap">ลบช่วงเวลา</button>
+                        </div>
                     </form>
+                    
                 </div>
 
                 @include('admin.complaints.partials.table_template', ['items' => $historyComplaints, 'type' => 'history', 'color' => 'gray'])

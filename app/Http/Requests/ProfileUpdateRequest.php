@@ -16,7 +16,12 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            // ลบ 'name' ออก และเพิ่มฟิลด์ใหม่เข้าไปแทน
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'phone_number' => ['required', 'string', 'max:10'],
+            
+            // ส่วนของอีเมลคงไว้เหมือนเดิม
             'email' => [
                 'required',
                 'string',
